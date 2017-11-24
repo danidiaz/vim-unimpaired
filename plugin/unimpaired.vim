@@ -42,3 +42,29 @@ call s:MapNextFamily('q','c')
 call s:MapNextFamily('t','t')
 
 " }}}1
+
+" Put {{{1
+
+function! s:putline(how, map) abort
+  let [body, type] = [getreg(v:register), getregtype(v:register)]
+  call setreg(v:register, body, 'l')
+  exe 'normal! "'.v:register.a:how
+  call setreg(v:register, body, type)
+  if type !=# 'V'
+    silent! call repeat#set("\<Plug>unimpairedPut".a:map)
+  endif
+endfunction
+
+nnoremap <silent> <Plug>unimpairedPutAbove :call <SID>putline('[p', 'Above')<CR>
+nnoremap <silent> <Plug>unimpairedPutBelow :call <SID>putline(']p', 'Below')<CR>
+
+call s:map('n', '[p', '<Plug>unimpairedPutAbove')
+call s:map('n', ']p', '<Plug>unimpairedPutBelow')
+call s:map('n', '>P', ":call <SID>putline('[p', 'Above')<CR>>']", '<silent>')
+call s:map('n', '>p', ":call <SID>putline(']p', 'Below')<CR>>']", '<silent>')
+call s:map('n', '<P', ":call <SID>putline('[p', 'Above')<CR><']", '<silent>')
+call s:map('n', '<p', ":call <SID>putline(']p', 'Below')<CR><']", '<silent>')
+call s:map('n', '=P', ":call <SID>putline('[p', 'Above')<CR>=']", '<silent>')
+call s:map('n', '=p', ":call <SID>putline(']p', 'Below')<CR>=']", '<silent>')
+
+" }}}1
